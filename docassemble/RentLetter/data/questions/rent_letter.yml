@@ -1,0 +1,325 @@
+include:
+  - docassemble.MAVirtualCourt:basic-questions.yml
+---
+comment: |
+  The metadata section controls the tab title and saved interview title. You can delete this section if you include this YAML file in another YAML file.
+metadata:
+  title: |
+    Conditions Rent Tender Letter
+  short title: |
+    Rent letter
+---
+comment: |
+  This section is used by MAVirtualCourts to control how some of the questions work.
+mandatory: True
+code: |
+  interview_metadata # make sure we initialize the object
+  if not defined("interview_metadata['rent_letter']"):
+    interview_metadata.initializeObject('rent_letter')
+  interview_metadata['rent_letter'].update({
+    'title': 'Conditions Rent Tender Letter',
+    'short title': 'Rent letter',
+    'description': 'This letter is used to contact the new owner of your leased property regarding rent and living conditions.',
+    'original_form': 'https://www.masslegalhelp.org/housing/lt1-form-26-conditions-rent-tender-letter.pdf',
+    'allowed courts': [
+    ],
+    'categories': [
+      'Housing',
+    ],
+    'logic block variable': 'rent_letter',
+    'attachment block variable': 'rent_letter_attachment',
+    'typical role': 'plaintiff',
+  })
+---
+features:
+  navigation: True
+---
+sections:
+  - review_rent_letter: Review your answers
+---
+id: interview_order_rent_letter
+code: |
+  # This is a placeholder to control logic flow in this interview
+
+  basic_questions_intro_screen 
+  rent_letter_intro
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["rent_letter"]["allowed courts"]
+  nav.set_section('review_rent_letter')
+  user_role = 'plaintiff'
+  # Set the answer file name.
+  set_parts(subtitle=str(users))
+  set_progress(12.5)
+  other_parties[0].address.address
+  other_parties[0]
+  users[0].email
+  set_progress(25.0)
+  users[0]
+  str(other_parties)
+  set_progress(37.5)
+  users[0].address.address
+  conditions_with_property
+  date_sent
+  # Save (anonymized) interview statistics.
+  store_variables_snapshot(data={'zip': users[0].address.zip})
+  rent_letter_preview_question # Pre-canned preview screen
+  basic_questions_signature_flow
+  users[0].signature
+  rent_letter = True
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Conditions Rent Tender Letter
+continue button field: rent_letter_intro
+question: |
+  Conditions Rent Tender Letter - Form 26
+subquestion: |
+  If you believe your rental unit may be foreclosed, protect yourself right away!  Keep paying your rent. 
+  
+  To do so you need to find out who the new owner is and who to contact in case the property is in need of repairs. This letter is used to contact the new owner of your leased property regarding rent and living conditions.
+  
+  **Before you begin this form it is best to have a copy of your lease / rental agreement; the contact information of the new owner; and any current issues with the property that make living there dangerous to your health.**
+---
+id: Review your form before you sign it
+continue button field: rent_letter_preview_question
+question: |
+  Review your form before you sign it
+subquestion: |
+  Here is a preview of the form you'll sign on the next page. 
+  
+   ${ pdf_concatenate(rent_letter_attachment['preview'], filename='rent_letter.pdf')}
+---
+id: your address
+question: |
+  What is your address?
+subquestion: |
+  Please fill in the property address information as it appears on your lease. 
+fields:
+  - Street address: users[0].address.address
+    address autocomplete: True
+  - Unit: users[0].address.unit
+    required: False
+  - City: users[0].address.city
+  - State: users[0].address.state
+    code: |
+      states_list()
+    default: MA      
+  - Zip: users[0].address.zip
+    required: False
+---
+id: any other users
+question: |
+  Is anyone else listed on the lease with you?
+subquestion: |
+  % if len(users.elements) > 1:
+  You have already told us about ${comma_and_list(users.complete_elements())}.
+  % else:
+  We need to know the name of everyone who is part of the lease agreement.
+  % endif
+  
+  Is anyone else listed on the lease and/or rental agreement?
+yesno: users.there_is_another 
+---
+id: names of opposing parties
+question: |
+ 
+  Please list the name of the new owner of the property. 
+  
+subquestion: |
+  If you do not know the name of the new owner, please visit                             [Mass Legal Help](https://www.masslegalhelp.org/housing/lt1-chapter-18-to-do-first#whoisowner) to determine who the new owner is prior to completing this form. 
+  
+  Click "${word("Add another")}" to add more.
+list collect: 
+  enable: True
+  label: |
+    % if users==plaintiffs:
+    New Owner ${i+1}    
+    % else:
+    Plaintiff/Petitioner ${i+1}
+    % endif
+fields:
+  - Are they a person, or a business?: other_parties[i].person_type
+    input type: radio
+    choices:
+      - Business or organization: business
+      - Person: individual
+  - First name: other_parties[i].name.first
+    show if:
+      variable: other_parties[i].person_type
+      is: "individual"
+  - Last name: other_parties[i].name.last
+    show if:
+      variable: other_parties[i].person_type      
+      is: "individual"
+  - Suffix: other_parties[i].name.suffix
+    code: |
+      name_suffix()
+    show if:
+      variable: other_parties[i].person_type      
+      is: "individual"
+    required: False      
+  - Name of organization or business: other_parties[i].name.first
+    show if:
+      variable: other_parties[i].person_type
+      is: business
+---
+objects:
+  - other_parties: PeopleList.using(ask_number=True, target_number=1)
+---
+id: your name
+question:  |
+  What is your name?
+subquestion:  |
+  Please state your name as it appears on the lease. 
+fields:
+  - First Name: users[0].name.first
+  - Middle Name: users[0].name.middle
+    required: False
+  - Last Name: users[0].name.last
+  - Suffix: users[0].name.suffix
+    code: |
+      name_suffix()
+    required: False 
+---
+id: your contact information
+question: |
+  What is your contact information?
+subquestion: |
+  The new owner needs to be able to reach you to inform you of where to send the rent and to schedule any times to make repairs to the property.
+  
+  Include at least **one** way to reach you other than by mail.
+fields:  
+  - Mobile number: users[0].mobile_number
+    required: False
+  - Other phone number: users[0].phone_number
+    required: False
+  - Email address: users[0].email    
+    datatype: email
+    required: False
+  - Other ways to reach you: users[0].other_contact_method
+    input type: area
+    required: False
+    help: |
+      If you do not have a phone number or email the court can use, provide
+      specific contact instructions. For example, use a friend's phone number.
+      But the friend must be someone you can rely on to tell you the court is
+      trying to reach you.
+validation code: |
+  if (not showifdef('users[0].phone_number') and \
+      (not showifdef('users[0].mobile_number')) and \
+      (not showifdef('users[0].email')) and \
+      (not showifdef('users[0].other_contact_method'))):
+    validation_error(word("You need to provide at least one contact method."))
+help: |
+  The court **must** be able to reach you. So you have to give them some way to do this.
+  
+  Some forms allow you to tell the court you need to keep your address, phone,
+  and email confidential, so that only court staff can see this information. 
+---
+id: Problems with the property
+question: |
+  Problems with the property
+subquestion: |
+  Are there any problems with the property that you would like to inform the new   owner of, such as: 
+  
+  cockroaches, insects, mice or rats;
+  
+  problems with heat and/or hot water; 
+  
+  water entry or leakage; 
+  
+  lead paint; 
+  
+  defective locks or security problems;
+  
+  defective or leaky windows; 
+  
+  defective ceilings, walls or floors;
+  
+  or any other issue that is making your living situation problematic.
+  
+  Please list all below. If no issues present, please state "No issues at this time" in the box below.   
+fields:
+  - 'Conditions with property': conditions_with_property
+    input type: area
+---
+id: Delivery
+question: |
+  Delivery
+subquestion: |
+  When and how do you plan to deliver this letter to the new owner?
+fields:
+  - 'Date sent': date_sent
+    datatype: date
+  - 'Delivery method: either via mail or in-person': delivery_method
+---
+progress: 100
+mandatory: True
+id: Your form is ready to download and file
+question: |
+  Your form is ready to download and file
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  Below is a preview of your form.
+  
+  ${pdf_concatenate(rent_letter_attachment['final'], filename='rent_letter.pdf') }
+need: rent_letter
+attachment code: rent_letter_attachment['final']
+---
+objects:
+  - rent_letter_attachment: DADict
+---
+attachment:
+    variable name: rent_letter_attachment[i]
+    name: Rent letter
+    filename: Rent_letter
+    docx template file: rent_letter.docx
+---
+id: rent_letter review screen
+event: review_rent_letter
+question: |
+  Placeholder Review Screen
+subquestion: |
+  Edit your answers below
+review: 
+  - Edit: date_sent
+    button: |
+      Date sent:
+      ${ date_sent.format() }
+  - Edit: conditions_with_property
+    button: |
+      Conditions with property:
+      > ${ single_paragraph(conditions_with_property) }
+  - Edit: delivery_method
+    button: |
+      Delivery method:
+      ${ delivery_method }
+  - Edit: other_parties[0].address.address
+    button: |
+      other_parties[0].address.address:
+      ${ other_parties[0].address.address }
+  - Edit: other_parties[0].name.first
+    button: |
+      other_parties[0]:
+      ${ other_parties[0] }
+  - Edit: users[0].email
+    button: |
+      users[0].email:
+      ${ users[0].email }
+  - Edit: users[0].name.first
+    button: |
+      users[0]:
+      ${ users[0] }
+  - Edit: users[0].signature
+    button: |
+      users[0].signature:
+      ${ users[0].signature }
+  - Edit: other_parties[0].name.first
+    button: |
+      other_parties:
+      ${ other_parties }
+  - Edit: users[0].address.address
+    button: |
+      users[0].address.address:
+      ${ users[0].address.address }
