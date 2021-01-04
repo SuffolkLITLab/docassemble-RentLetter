@@ -9,6 +9,9 @@ metadata:
   short title: |
     Rent letter
 ---
+code: |
+  interview_short_title = "Offer your new landlord rent after foreclosure or sale"
+---
 comment: |
   This section is used by MAVirtualCourts to control how some of the questions work.
 mandatory: True
