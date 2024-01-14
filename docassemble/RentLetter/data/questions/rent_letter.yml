@@ -125,11 +125,9 @@ yesno: users.there_is_another
 ---
 id: names of opposing parties
 question: |
- 
   Please list the name of the new owner of the property. 
-  
 subquestion: |
-  If you do not know the name of the new owner, please visit                             [Mass Legal Help](https://www.masslegalhelp.org/housing/lt1-chapter-18-to-do-first#whoisowner) to determine who the new owner is prior to completing this form. 
+  If you do not know the name of the new owner, please visit [Mass Legal Help](https://www.masslegalhelp.org/housing/lt1-chapter-18-to-do-first#whoisowner) to determine who the new owner is prior to completing this form. 
   
   Click "${word("Add another")}" to add more.
 list collect: 
@@ -170,7 +168,7 @@ objects:
   - other_parties: PeopleList.using(ask_number=True, target_number=1)
 ---
 id: your name
-question:  |
+question: |
   What is your name?
 subquestion:  |
   Please state your name as it appears on the lease. 
