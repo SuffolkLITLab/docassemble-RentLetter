@@ -121,7 +121,9 @@ subquestion: |
   % endif
   
   Is anyone else listed on the lease and/or rental agreement?
-yesno: users.there_is_another 
+fields:
+  - no label: users.there_is_another
+    datatype: yesnoradio
 ---
 id: names of opposing parties
 question: |
