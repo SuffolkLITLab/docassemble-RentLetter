@@ -6,17 +6,23 @@ include:
 metadata:
   title: Ask your new landlord where to pay rent after foreclosure
   short title: Rent after foreclosure
-  description: 'Massachusetts tenants: make a letter to the new owner after foreclosure.
-    Ask where to pay rent, report any needed repairs, and download a letter to sign
-    and send.'
-  can_I_use_this_form: Use this letter if you rent a home in Massachusetts, the foreclosure
-    is complete, and you know the new owner’s name and mailing address. It does not
-    stop an eviction or decide how much rent you owe.
-  before_you_start: Have the new owner’s name and address, your rental address, and
-    details of any repairs you want to report.
-  when_you_are_finished: Review, print, and sign your letter. Send it to the new owner
-    and keep a copy and proof of delivery. This interview does not send the letter
-    or pay rent.
+  description: |
+    Do you rent a home in Massachusetts that was sold in foreclosure?
+    Foreclosure is when a lender sells a home because the owner did not pay
+    the home loan. Make a letter to ask the new owner where to send your rent.
+    You can also tell the owner about repairs your home needs.
+  can_I_use_this_form: |
+    Use this letter if you rent a home in Massachusetts and the foreclosure
+    sale is finished. You need the new owner's name and address.
+    This letter does not stop an eviction, which is a court case to make you
+    leave your home. It does not decide how much rent you owe.
+  before_you_start: |
+    Have the new owner's name and address and your home's address.
+    Make a list of any repairs you want the owner to make.
+  when_you_are_finished: |
+    Read, print, and sign your letter. Send it to the new owner.
+    Keep a copy and proof that you sent it. This tool does not send the
+    letter or pay rent for you.
   authors:
   - Angela
   - Suffolk LIT Lab
@@ -89,18 +95,21 @@ question: |
   Write to your new landlord
 subquestion: |
   This letter asks the new owner where to send your rent after foreclosure.
+  Foreclosure is when a lender sells a home because the owner did not pay
+  the home loan.
   You can also tell them about repairs your home needs.
 
   You will get a letter to print, sign, and send. This tool does not send it for you.
 ---
 id: foreclosure status
 question: |
-  Is the foreclosure complete?
+  Is the foreclosure sale finished?
 subquestion: |
-  An auction alone does not finish a foreclosure. The foreclosure deed must also
-  be signed. [Learn how to check ownership](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
+  A sale to the highest bidder (an auction) is not the last step.
+  The foreclosure deed must also be signed. A deed is a document that
+  transfers ownership of the home. [Learn how to check ownership](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
 fields:
-  - The foreclosure is complete and I know the new owner's name and address: foreclosure_complete
+  - The foreclosure sale is finished and I know the new owner's name and address: foreclosure_complete
     datatype: yesnoradio
 ---
 id: check the owner first
@@ -108,8 +117,8 @@ event: foreclosure_help
 question: |
   Check who owns your home first
 subquestion: |
-  If the foreclosure is not complete, keep paying your current landlord.
-  If it is complete, find out who the new owner is before using this letter.
+  If the foreclosure sale is not finished, keep paying your current landlord.
+  If it is finished, find out who the new owner is before using this letter.
 
   [Find out who the owner is](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
 buttons:
@@ -150,7 +159,7 @@ id: repair details
 question: |
   Does your home need repairs?
 fields:
-  - Do you want to report any repair problems in this letter?: has_repairs
+  - Do you want to tell the new owner about repairs in this letter?: has_repairs
     datatype: yesnoradio
   - Describe the problems: conditions_with_property
     input type: area
@@ -175,8 +184,8 @@ id: rent letter preview
 question: |
   Review your letter
 subquestion: |
-  Check the names, addresses, and repair details. Your signature line is blank
-  so you can sign after printing.
+  Check the names, addresses, and repairs. There is a blank line
+  for you to sign after you print the letter.
 
   ${ rent_letter_document }
 
@@ -205,7 +214,7 @@ review:
       Other contact information: ${ contact_information or 'Mail only' }
   - Edit: has_repairs
     button: |
-      Report repairs: ${ word(yesno(has_repairs)) }
+      Tell the owner about repairs: ${ word(yesno(has_repairs)) }
       % if has_repairs:
       ${ conditions_with_property }
       % endif
@@ -227,13 +236,13 @@ event: rent_letter_download
 question: |
   Download and send your letter
 subquestion: |
-  1. Download your letter. Check that it is correct.
+  1. Download your letter. Check that it is right.
   2. Print and sign it. Update the date if you send it on a different day.
   3. Send it to the new owner. Keep a copy and proof that you sent it.
 
   This letter does not pay your rent. If the new owner will not accept rent,
   [read what to do next](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
-  If you have an eviction notice or court papers, get help right away.
+  If you get a notice to leave your home or court papers, get help right away.
 
   ${ action_button_html(url_action('review_rent_letter'), label='Edit answers') }
 attachment code: rent_letter_document

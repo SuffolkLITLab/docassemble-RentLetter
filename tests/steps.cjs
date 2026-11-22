@@ -39,7 +39,15 @@ When('I follow the review link containing {string}',{timeout:90000},async(text)=
  const links=await scope.page.$$('#daquestion a');
  for(const link of links){
   if((await link.evaluate(e=>e.closest('.da-review')?.innerText || e.innerText)).includes(text)){
-   await scope.tapElementAndNavigate(scope,{elem:link});return;
+   // Review links use AJAX; a full navigation event may never occur.
+   const before=await scope.page.$eval('#daquestion',e=>e.innerText);
+   await link.click();
+   await scope.page.waitForFunction(previous => {
+    const question=document.querySelector('#daquestion');
+    return question && question.innerText!==previous;
+   },{timeout:90000},before);
+   await scope.examinePageID(scope);
+   return;
   }
  }
  throw Error('No review link containing: '+text);
@@ -132,3 +140,13 @@ scope.tapElementAndNavigate=async(state,{elem,post_nav_handlers=null})=>{
  await state.afterStep(state,{navigated:result.navigated,waitForTimeout:200});
  return result.error_data;
 };
+
+When('I return from answer review',{timeout:90000},async()=>{
+ const before=await scope.page.$eval('#daquestion',e=>e.innerText);
+ await scope.page.click(scope.continue_button_selector);
+ await scope.page.waitForFunction(previous => {
+  const question=document.querySelector('#daquestion');
+  return question && question.innerText!==previous;
+ },{timeout:90000},before);
+ await scope.examinePageID(scope);
+});

@@ -1,5 +1,5 @@
 {
-  "source_sha256": "29cdd8ec14024cb19892b324fbbdd3f6ab41b02c83e0b7db51935d97283499cd",
+  "source_sha256": "0990a9060df559bd68b7be4946c41a8101deab62c88c9a133b14531cdd249192",
   "review_date": "2026-11-22",
   "ai_review": {
     "reviewers": [
@@ -37,5 +37,68 @@
   "limitations": [
     "Scope decision is not a blanket attestation of all formal legal, usability, flow and publication review gates.",
     "Localhost browser testing; production package not installed or listed."
-  ]
+  ],
+  "plain_language_revision": {
+    "date": "2026-11-22",
+    "target": "Sixth-grade authored prose; common English vocabulary, with necessary terms explained.",
+    "method": "Flesch-Kincaid advisory score; wordfreq English top4000 exact word forms (inflections, proper names and legal terms also flagged). Static text excludes code/URLs/variable expressions; branch prose combined; short labels affect scores. Read screen text and justify exceptions; not proof of comprehension.",
+    "checker": "DAYamlChecker --style --style-review-level thorough --no-url-check; no paid AI call",
+    "grades_before": {
+      "metadata": 7.4,
+      "screens": 4.2,
+      "templates": 4.4
+    },
+    "grades_after": {
+      "metadata": 4.5,
+      "screens": 4.0,
+      "templates": 4.2
+    },
+    "vocabulary_flags": {
+      "metadata": [
+        "eviction",
+        "foreclosure",
+        "home's",
+        "landlord",
+        "lender",
+        "massachusetts",
+        "owe",
+        "owner's",
+        "repairs",
+        "sells"
+      ],
+      "screens": [
+        "addresses",
+        "auction",
+        "bidder",
+        "blank",
+        "deed",
+        "foreclosure",
+        "landlord",
+        "leak",
+        "lender",
+        "owner's",
+        "owns",
+        "pests",
+        "rental",
+        "repairs",
+        "sells",
+        "suite",
+        "transfers",
+        "zip"
+      ],
+      "templates": [
+        "foreclosure",
+        "repairs",
+        "signature",
+        "sincerely"
+      ]
+    },
+    "exceptions": [
+      "Foreclosure, deed, auction and eviction are legal/process terms explained in nearby prose. Landlord and repairs are concrete housing terms; replacing them would obscure the purpose.",
+      "Massachusetts, ZIP and suite are place/address terms. Addresses, owner possessives, owns, sells and transfers include word forms whose base words may be in the frequency list.",
+      "Blank, leak and pests are concrete examples clearer than abstract substitutes; signature and Sincerely are conventional letter wording.",
+      "The remaining checker suggestion to omit There is does not identify a comprehension problem in the short instruction about the blank signing line."
+    ],
+    "runtime": "All three updated paths passed across runs. Run20261122-111701 passed optional/no-repair and exit paths; final targeted edit run20261122-111844 passed15steps including fresh edited PDF. Test-only AJAX review/Resume waits corrected after earlier navigation timeouts."
+  }
 }

@@ -1,5 +1,6 @@
 Feature: New owner rent letter
 
+  @edit
   Scenario: Tenant reports repairs to a bank that bought the home
     Given I start the interview at "rent_letter.yml"
     And I wait 1 second
@@ -28,11 +29,11 @@ Feature: New owner rent letter
     And the downloaded PDF "letter_to_new_landlord.pdf" should contain "Example Bank"
     And the downloaded PDF "letter_to_new_landlord.pdf" should contain "front door lock is broken"
     When I follow the review link containing "Edit answers"
-    And I follow the review link containing "Report repairs:"
+    And I follow the review link containing "Tell the owner about repairs:"
     And I get to "rent letter review" with this data:
       | var | value | trigger |
       | has_repairs | False | |
-    And I continue
+    And I return from answer review
     Then the question id should be "rent letter download"
     When I download a fresh copy of "letter_to_new_landlord.pdf"
     Then the downloaded PDF "letter_to_new_landlord.pdf" should not contain "front door lock is broken"
