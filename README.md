@@ -14,4 +14,12 @@ Three ALKiln scenarios cover a bank owner with repairs, an individual owner with
 
 Original student author: Angela, acorey2@suffolk.edu.
 
-Run browser scenarios against a local installation with `python tests/run_alkiln.py .`. Set `ALKILN_PATH` if ALKiln is not at `~/ALKiln`. The runner reads local credentials without saving them in tracked files.
+## Browser tests
+
+Use the standard [ALKiln setup](https://assemblyline.suffolklitlab.org/docs/components/ALKiln/setup/). The `ALKiln interview tests` GitHub workflow starts an isolated sandbox, runs ALKiln, and uploads its reports. Run it manually from Actions after the workflow is on the default branch, selecting the branch to test. No local credential file or custom runner is needed. Tests can also run with ALKilnInThePlayground as described in the setup guide.
+
+The three scenarios use built-in ALKiln steps only. Two compare downloaded PDFs with synthetic-data baselines in `data/sources`; the third checks the early exit. Baseline comparison uses ALKiln's text/field comparison, not a visual match. Keep the fixed story values and dates aligned with the baselines. Review any baseline change as carefully as a form change.
+
+The mobile step selects ALKiln's mobile mode; it does not assert an exact 390px width. After copy or layout changes, manually check a narrow phone view. Also test changing answers from the download page, then download again and confirm the new PDF replaces the old values. These are manual checks, not claims made by the three standard scenarios. Prior local browser results used a temporary custom harness that has been removed; rerun the standard workflow for current runtime evidence.
+
+For the edit check, remove the repair section and confirm it is absent from the new PDF.

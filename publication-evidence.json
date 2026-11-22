@@ -1,5 +1,5 @@
 {
-  "source_sha256": "0990a9060df559bd68b7be4946c41a8101deab62c88c9a133b14531cdd249192",
+  "source_sha256": "d41b479ba54f23e4b9a52ccafdd068aad39bc9ef82d56b6bc8e2dba3028c35cb",
   "review_date": "2026-11-22",
   "ai_review": {
     "reviewers": [
@@ -100,5 +100,16 @@
       "The remaining checker suggestion to omit There is does not identify a comprehension problem in the short instruction about the blank signing line."
     ],
     "runtime": "All three updated paths passed across runs. Run20261122-111701 passed optional/no-repair and exit paths; final targeted edit run20261122-111844 passed15steps including fresh edited PDF. Test-only AJAX review/Resume waits corrected after earlier navigation timeouts."
+  },
+  "test_standardization": {
+    "date": "2026-11-22",
+    "runner": "Official SuffolkLITLab/ALKiln@v5 action with isolated GitHub sandbox; ALKiln5.17.2",
+    "removed": [
+      "tests/run_alkiln.py",
+      "tests/steps.cjs"
+    ],
+    "validation": "Three scenarios /18 native steps resolve in stable5.17.2 dry-run; no undefined steps. No standard-runner end-to-end result claimed.",
+    "coverage": "Two successful paths download and compare PDFs with reviewed synthetic baselines. Third checks scope exit. Edit/regenerate and exact-width visual checks are explicitly manual in README.",
+    "historical_evidence": "Earlier local runtime results above used the removed custom harness and are retained as historical observations, not proof that the standard runner passes."
   }
 }

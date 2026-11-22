@@ -1,6 +1,5 @@
 Feature: New owner rent letter
 
-  @edit
   Scenario: Tenant reports repairs to a bank that bought the home
     Given I start the interview at "rent_letter.yml"
     And I wait 1 second
@@ -26,23 +25,11 @@ Feature: New owner rent letter
       | date_sent | 11/22/2026 | |
       | delivery_method | mail | |
     Then I download "letter_to_new_landlord.pdf"
-    And the downloaded PDF "letter_to_new_landlord.pdf" should contain "Example Bank"
-    And the downloaded PDF "letter_to_new_landlord.pdf" should contain "front door lock is broken"
-    When I follow the review link containing "Edit answers"
-    And I follow the review link containing "Tell the owner about repairs:"
-    And I get to "rent letter review" with this data:
-      | var | value | trigger |
-      | has_repairs | False | |
-    And I return from answer review
-    Then the question id should be "rent letter download"
-    When I download a fresh copy of "letter_to_new_landlord.pdf"
-    Then the downloaded PDF "letter_to_new_landlord.pdf" should not contain "front door lock is broken"
-    And the downloaded PDF "letter_to_new_landlord.pdf" should not contain "Please repair"
-
+    And I expect the baseline PDF "baseline_scenario_1.pdf" and the new PDF "letter_to_new_landlord.pdf" to be the same
   Scenario: Tenant has no repair issues and wants replies by mail only
     Given I start the interview at "rent_letter.yml"
     And I wait 1 second
-    And I use a narrow phone viewport
+    And I am using a mobile phone
     And the maximum seconds for each step is 90
     When I get to "rent letter download" with this data:
       | var | value | trigger |
@@ -64,10 +51,7 @@ Feature: New owner rent letter
       | date_sent | 11/22/2026 | |
       | delivery_method | hand delivery | |
     Then I download "letter_to_new_landlord.pdf"
-    And the downloaded PDF "letter_to_new_landlord.pdf" should contain "where to send my rent"
-    And the downloaded PDF "letter_to_new_landlord.pdf" should not contain "Please repair"
-    And the downloaded PDF "letter_to_new_landlord.pdf" should not contain "You can also reach me"
-    And the interview fits the phone width
+    And I expect the baseline PDF "baseline_scenario_2.pdf" and the new PDF "letter_to_new_landlord.pdf" to be the same
     And I take a screenshot named "rent-phone"
 
   Scenario: Tenant does not know whether foreclosure is complete
