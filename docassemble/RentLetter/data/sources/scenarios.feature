@@ -25,7 +25,7 @@ Feature: New owner rent letter
       | date_sent | 11/22/2026 | |
       | delivery_method | mail | |
     Then I download "letter_to_new_landlord.pdf"
-    And I expect the baseline PDF "baseline_scenario_1.pdf" and the new PDF "letter_to_new_landlord.pdf" to be the same
+    And I expect the baseline PDF "rent-with-repairs-baseline.pdf" and the new PDF "letter_to_new_landlord.pdf" to be the same
   Scenario: Tenant has no repair issues and wants replies by mail only
     Given I start the interview at "rent_letter.yml"
     And I wait 1 second
@@ -51,7 +51,7 @@ Feature: New owner rent letter
       | date_sent | 11/22/2026 | |
       | delivery_method | hand delivery | |
     Then I download "letter_to_new_landlord.pdf"
-    And I expect the baseline PDF "baseline_scenario_2.pdf" and the new PDF "letter_to_new_landlord.pdf" to be the same
+    And I expect the baseline PDF "rent-mail-only-baseline.pdf" and the new PDF "letter_to_new_landlord.pdf" to be the same
     And I take a screenshot named "rent-phone"
 
   Scenario: Tenant does not know whether foreclosure is complete

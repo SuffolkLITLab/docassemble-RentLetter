@@ -47,8 +47,9 @@ metadata:
   requires_notarization: false
   review_date: 2026-11-22
   maturity: testing
-  update_notes: Revised for publication review in November 2026. Legal approval is
-    not implied.
+  update_notes: |
+    Makes a letter asking the new owner where to pay rent after foreclosure,
+    with optional repair details and a chance to edit answers.
 ---
 code: |
   AL_DEFAULT_COUNTRY = "US"
