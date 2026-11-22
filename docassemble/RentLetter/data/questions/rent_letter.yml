@@ -1,328 +1,239 @@
+---
 include:
-  - docassemble.MAVirtualCourt:basic-questions.yml
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.MassAccess:massaccess.yml
 ---
-comment: |
-  The metadata section controls the tab title and saved interview title. You can delete this section if you include this YAML file in another YAML file.
 metadata:
-  title: |
-    Conditions Rent Tender Letter
-  short title: |
-    Rent letter
+  title: Ask your new landlord where to pay rent after foreclosure
+  short title: Rent after foreclosure
+  description: 'Massachusetts tenants: make a letter to the new owner after foreclosure.
+    Ask where to pay rent, report any needed repairs, and download a letter to sign
+    and send.'
+  can_I_use_this_form: Use this letter if you rent a home in Massachusetts, the foreclosure
+    is complete, and you know the new owner’s name and mailing address. It does not
+    stop an eviction or decide how much rent you owe.
+  before_you_start: Have the new owner’s name and address, your rental address, and
+    details of any repairs you want to report.
+  when_you_are_finished: Review, print, and sign your letter. Send it to the new owner
+    and keep a copy and proof of delivery. This interview does not send the letter
+    or pay rent.
+  authors:
+  - Angela
+  - Suffolk LIT Lab
+  jurisdiction: NAM-US-US+MA
+  languages:
+  - en
+  LIST_topics: &id001
+  - HO-08-06-00-00
+  tags: *id001
+  help_page_url: https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first
+  help_page_title: What to do first after foreclosure
+  form_titles:
+  - Letter to the new owner after foreclosure
+  form_numbers: []
+  allowed_courts: []
+  typical_role: na
+  estimated_completion_minutes: 10
+  estimated_completion_delta: 5
+  efiling_enabled: false
+  integrated_efiling: false
+  integrated_email_filing: false
+  requires_notarization: false
+  review_date: 2026-11-22
+  maturity: testing
+  update_notes: Revised for publication review in November 2026. Legal approval is
+    not implied.
 ---
 code: |
-  interview_short_title = "Offer your new landlord rent after foreclosure or sale"
----
-comment: |
-  This section is used by MAVirtualCourts to control how some of the questions work.
-mandatory: True
-code: |
-  interview_metadata # make sure we initialize the object
-  if not defined("interview_metadata['rent_letter']"):
-    interview_metadata.initializeObject('rent_letter')
-  interview_metadata['rent_letter'].update({
-    'title': 'Conditions Rent Tender Letter',
-    'short title': 'Rent letter',
-    'description': 'This letter is used to contact the new owner of your leased property regarding rent and living conditions.',
-    'original_form': 'https://www.masslegalhelp.org/housing/lt1-form-26-conditions-rent-tender-letter.pdf',
-    'allowed courts': [
-    ],
-    'categories': [
-      'Housing',
-    ],
-    'logic block variable': 'rent_letter',
-    'attachment block variable': 'rent_letter_attachment',
-    'typical role': 'plaintiff',
-  })
+  AL_DEFAULT_COUNTRY = "US"
+  AL_DEFAULT_STATE = "MA"
+  al_form_type = "letter"
 ---
 features:
-  navigation: True
+  cache documents: False
+  tagged pdf: True
+---
+objects:
+  - users: ALPeopleList.using(target_number=1)
+---
+objects:
+  - new_owner: ALIndividual
 ---
 sections:
   - review_rent_letter: Review your answers
 ---
-id: interview_order_rent_letter
+initial: True
 code: |
-  # This is a placeholder to control logic flow in this interview
-
-  basic_questions_intro_screen 
-  rent_letter_intro
-  # Set the allowed courts for this interview
-  allowed_courts = interview_metadata["rent_letter"]["allowed courts"]
-  nav.set_section('review_rent_letter')
-  user_role = 'plaintiff'
-  # Set the answer file name.
-  set_parts(subtitle=str(users))
-  set_progress(12.5)
-  other_parties[0].address.address
-  other_parties[0]
-  users[0].email
-  set_progress(25.0)
-  users[0]
-  str(other_parties)
-  set_progress(37.5)
-  users[0].address.address
-  conditions_with_property
-  date_sent
-  # Save (anonymized) interview statistics.
-  store_variables_snapshot(data={'zip': users[0].address.zip})
-  rent_letter_preview_question # Pre-canned preview screen
-  basic_questions_signature_flow
-  users[0].signature
-  rent_letter = True
+  # Rebuild downloads after an answer is edited.
+  undefine("rent_letter_document")
 ---
-comment: |
-  This question is used to introduce your interview. Please customize
-id: Conditions Rent Tender Letter
+mandatory: True
+code: |
+  al_intro_screen
+  rent_letter_intro
+  if not foreclosure_complete:
+    foreclosure_help
+  users[0].name.first
+  users[0].address.address
+  new_owner.name.first
+  new_owner.address.address
+  contact_information
+  has_repairs
+  date_sent
+  rent_letter_preview
+  rent_letter_download
+---
+id: rent letter introduction
 continue button field: rent_letter_intro
 question: |
-  Conditions Rent Tender Letter - Form 26
+  Write to your new landlord
 subquestion: |
-  If you believe your rental unit may be foreclosed, protect yourself right away!  Keep paying your rent. 
-  
-  To do so you need to find out who the new owner is and who to contact in case the property is in need of repairs. This letter is used to contact the new owner of your leased property regarding rent and living conditions.
-  
-  **Before you begin this form it is best to have a copy of your lease / rental agreement; the contact information of the new owner; and any current issues with the property that make living there dangerous to your health.**
+  This letter asks the new owner where to send your rent after foreclosure.
+  You can also tell them about repairs your home needs.
+
+  You will get a letter to print, sign, and send. This tool does not send it for you.
 ---
-id: Review your form before you sign it
-continue button field: rent_letter_preview_question
+id: foreclosure status
 question: |
-  Review your form before you sign it
+  Is the foreclosure complete?
 subquestion: |
-  Here is a preview of the form you'll sign on the next page. 
-  
-   ${ pdf_concatenate(rent_letter_attachment['preview'], filename='rent_letter.pdf')}
----
-id: your address
-question: |
-  What is your address?
-subquestion: |
-  Please fill in the property address information as it appears on your lease. 
+  An auction alone does not finish a foreclosure. The foreclosure deed must also
+  be signed. [Learn how to check ownership](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
 fields:
-  - Street address: users[0].address.address
-    address autocomplete: True
-  - Unit: users[0].address.unit
-    required: False
-  - City: users[0].address.city
-  - State: users[0].address.state
-    code: |
-      states_list()
-    default: MA      
-  - Zip: users[0].address.zip
-    required: False
----
-id: any other users
-question: |
-  Is anyone else listed on the lease with you?
-subquestion: |
-  % if len(users.elements) > 1:
-  You have already told us about ${comma_and_list(users.complete_elements())}.
-  % else:
-  We need to know the name of everyone who is part of the lease agreement.
-  % endif
-  
-  Is anyone else listed on the lease and/or rental agreement?
-fields:
-  - no label: users.there_is_another
+  - The foreclosure is complete and I know the new owner's name and address: foreclosure_complete
     datatype: yesnoradio
 ---
-id: names of opposing parties
+id: check the owner first
+event: foreclosure_help
 question: |
-  Please list the name of the new owner of the property. 
+  Check who owns your home first
 subquestion: |
-  If you do not know the name of the new owner, please visit [Mass Legal Help](https://www.masslegalhelp.org/housing/lt1-chapter-18-to-do-first#whoisowner) to determine who the new owner is prior to completing this form. 
-  
-  Click "${word("Add another")}" to add more.
-list collect: 
-  enable: True
-  label: |
-    % if users==plaintiffs:
-    New Owner ${i+1}    
-    % else:
-    Plaintiff/Petitioner ${i+1}
-    % endif
-fields:
-  - Are they a person, or a business?: other_parties[i].person_type
-    input type: radio
-    choices:
-      - Business or organization: business
-      - Person: individual
-  - First name: other_parties[i].name.first
-    show if:
-      variable: other_parties[i].person_type
-      is: "individual"
-  - Last name: other_parties[i].name.last
-    show if:
-      variable: other_parties[i].person_type      
-      is: "individual"
-  - Suffix: other_parties[i].name.suffix
-    code: |
-      name_suffix()
-    show if:
-      variable: other_parties[i].person_type      
-      is: "individual"
-    required: False      
-  - Name of organization or business: other_parties[i].name.first
-    show if:
-      variable: other_parties[i].person_type
-      is: business
+  If the foreclosure is not complete, keep paying your current landlord.
+  If it is complete, find out who the new owner is before using this letter.
+
+  [Find out who the owner is](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
+buttons:
+  - Start over: restart
+  - Leave: exit
 ---
-objects:
-  - other_parties: PeopleList.using(ask_number=True, target_number=1)
----
-id: your name
+id: new owner name
 question: |
-  What is your name?
-subquestion:  |
-  Please state your name as it appears on the lease. 
-fields:
-  - First Name: users[0].name.first
-  - Middle Name: users[0].name.middle
-    required: False
-  - Last Name: users[0].name.last
-  - Suffix: users[0].name.suffix
-    code: |
-      name_suffix()
-    required: False 
----
-id: your contact information
-question: |
-  What is your contact information?
+  Who is the new owner?
 subquestion: |
-  The new owner needs to be able to reach you to inform you of where to send the rent and to schedule any times to make repairs to the property.
-  
-  Include at least **one** way to reach you other than by mail.
-fields:  
-  - Mobile number: users[0].mobile_number
+  Copy the name from the ownership notice or deed. A bank or company can be the owner.
+fields:
+  - New owner's full name: new_owner.name.first
+---
+id: new owner mailing address
+question: |
+  Where will you send the letter?
+fields:
+  - Street address: new_owner.address.address
+  - Unit or suite: new_owner.address.unit
     required: False
-  - Other phone number: users[0].phone_number
-    required: False
-  - Email address: users[0].email    
-    datatype: email
-    required: False
-  - Other ways to reach you: users[0].other_contact_method
+  - City: new_owner.address.city
+  - State: new_owner.address.state
+  - ZIP code: new_owner.address.zip
+---
+id: rent letter contact information
+question: |
+  How can the new owner reach you?
+subquestion: |
+  Your rental address will be on the letter. You can also add a phone number,
+  email address, or other contact instructions. Leave this blank to use mail only.
+fields:
+  - Other ways to reach you: contact_information
     input type: area
     required: False
+---
+id: repair details
+question: |
+  Does your home need repairs?
+fields:
+  - Do you want to report any repair problems in this letter?: has_repairs
+    datatype: yesnoradio
+  - Describe the problems: conditions_with_property
+    input type: area
+    show if: has_repairs
     help: |
-      If you do not have a phone number or email the court can use, provide
-      specific contact instructions. For example, use a friend's phone number.
-      But the friend must be someone you can rely on to tell you the court is
-      trying to reach you.
-validation code: |
-  if (not showifdef('users[0].phone_number') and \
-      (not showifdef('users[0].mobile_number')) and \
-      (not showifdef('users[0].email')) and \
-      (not showifdef('users[0].other_contact_method'))):
-    validation_error(word("You need to provide at least one contact method."))
-help: |
-  The court **must** be able to reach you. So you have to give them some way to do this.
-  
-  Some forms allow you to tell the court you need to keep your address, phone,
-  and email confidential, so that only court staff can see this information. 
+      For example, describe a leak, broken lock, pests, or a problem with heat.
+      Say where each problem is. Use your own words.
 ---
-id: Problems with the property
+id: planned delivery
 question: |
-  Problems with the property
-subquestion: |
-  Are there any problems with the property that you would like to inform the new   owner of, such as: 
-  
-  cockroaches, insects, mice or rats;
-  
-  problems with heat and/or hot water; 
-  
-  water entry or leakage; 
-  
-  lead paint; 
-  
-  defective locks or security problems;
-  
-  defective or leaky windows; 
-  
-  defective ceilings, walls or floors;
-  
-  or any other issue that is making your living situation problematic.
-  
-  Please list all below. If no issues present, please state "No issues at this time" in the box below.   
+  When will you send your letter?
 fields:
-  - 'Conditions with property': conditions_with_property
-    input type: area
----
-id: Delivery
-question: |
-  Delivery
-subquestion: |
-  When and how do you plan to deliver this letter to the new owner?
-fields:
-  - 'Date sent': date_sent
+  - Date: date_sent
     datatype: date
-  - 'Delivery method: either via mail or in-person': delivery_method
+    default: ${ today() }
+  - How will you send it?: delivery_method
+    choices:
+      - Mail: mail
+      - Hand delivery: hand delivery
 ---
-progress: 100
-mandatory: True
-id: Your form is ready to download and file
+id: rent letter preview
 question: |
-  Your form is ready to download and file
+  Review your letter
 subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
-  
-  Below is a preview of your form.
-  
-  ${pdf_concatenate(rent_letter_attachment['final'], filename='rent_letter.pdf') }
-need: rent_letter
-attachment code: rent_letter_attachment['final']
+  Check the names, addresses, and repair details. Your signature line is blank
+  so you can sign after printing.
+
+  ${ rent_letter_document }
+
+  ${ action_button_html(url_action('review_rent_letter'), label='Edit answers') }
+continue button field: rent_letter_preview
 ---
-objects:
-  - rent_letter_attachment: DADict
----
-attachment:
-    variable name: rent_letter_attachment[i]
-    name: Rent letter
-    filename: Rent_letter
-    docx template file: rent_letter.docx
----
-id: rent_letter review screen
+id: rent letter review
 event: review_rent_letter
 question: |
-  Placeholder Review Screen
-subquestion: |
-  Edit your answers below
-review: 
-  - Edit: date_sent
-    button: |
-      Date sent:
-      ${ date_sent.format() }
-  - Edit: conditions_with_property
-    button: |
-      Conditions with property:
-      > ${ single_paragraph(conditions_with_property) }
-  - Edit: delivery_method
-    button: |
-      Delivery method:
-      ${ delivery_method }
-  - Edit: other_parties[0].address.address
-    button: |
-      other_parties[0].address.address:
-      ${ other_parties[0].address.address }
-  - Edit: other_parties[0].name.first
-    button: |
-      other_parties[0]:
-      ${ other_parties[0] }
-  - Edit: users[0].email
-    button: |
-      users[0].email:
-      ${ users[0].email }
+  Review your answers
+review:
   - Edit: users[0].name.first
     button: |
-      users[0]:
-      ${ users[0] }
-  - Edit: users[0].signature
-    button: |
-      users[0].signature:
-      ${ users[0].signature }
-  - Edit: other_parties[0].name.first
-    button: |
-      other_parties:
-      ${ other_parties }
+      Your name: ${ users[0] }
   - Edit: users[0].address.address
     button: |
-      users[0].address.address:
-      ${ users[0].address.address }
+      Rental address: ${ users[0].address.on_one_line() }
+  - Edit: new_owner.name.first
+    button: |
+      New owner: ${ new_owner.name.first }
+  - Edit: new_owner.address.address
+    button: |
+      New owner's address: ${ new_owner.address.on_one_line() }
+  - Edit: contact_information
+    button: |
+      Other contact information: ${ contact_information or 'Mail only' }
+  - Edit: has_repairs
+    button: |
+      Report repairs: ${ word(yesno(has_repairs)) }
+      % if has_repairs:
+      ${ conditions_with_property }
+      % endif
+  - Edit: date_sent
+    button: |
+      Send on: ${ date_sent }
+  - Edit: delivery_method
+    button: |
+      Delivery: ${ delivery_method }
+---
+attachment:
+  variable name: rent_letter_document
+  name: Letter to your new landlord
+  filename: letter_to_new_landlord
+  docx template file: rent_letter.docx
+---
+id: rent letter download
+event: rent_letter_download
+question: |
+  Download and send your letter
+subquestion: |
+  1. Download your letter. Check that it is correct.
+  2. Print and sign it. Update the date if you send it on a different day.
+  3. Send it to the new owner. Keep a copy and proof that you sent it.
+
+  This letter does not pay your rent. If the new owner will not accept rent,
+  [read what to do next](https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first).
+  If you have an eviction notice or court papers, get help right away.
+
+  ${ action_button_html(url_action('review_rent_letter'), label='Edit answers') }
+attachment code: rent_letter_document

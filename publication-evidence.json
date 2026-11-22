@@ -1,0 +1,41 @@
+{
+  "source_sha256": "29cdd8ec14024cb19892b324fbbdd3f6ab41b02c83e0b7db51935d97283499cd",
+  "review_date": "2026-11-22",
+  "ai_review": {
+    "reviewers": [
+      "Codex",
+      "Neon",
+      "Claude"
+    ],
+    "method": "Applied DAYamlChecker readiness research and publishing prompts with internal model sessions; verified against current sources and AssemblyLine authoring checklist.",
+    "source": "https://www.masslegalhelp.org/housing-apartments-shelter/foreclosure/what-do-first",
+    "findings_resolved": [
+      "Edited answers regenerate fresh downloads",
+      "Explicit tagged PDF generation",
+      "Accurate eligibility and scope disclosures",
+      "Current metadata and precise LIST classification"
+    ]
+  },
+  "runtime": {
+    "run": "20261122-104542",
+    "result": "3 scenarios and 30 steps passed",
+    "checks": [
+      "downloaded PDF content",
+      "answer edit and fresh download",
+      "optional omitted content",
+      "eligibility exit",
+      "390px viewport",
+      "runtime PDF tagged",
+      "one-page final PDF visually inspected"
+    ]
+  },
+  "human_scope_decision": {
+    "reviewer": "User",
+    "date": "2026-11-22",
+    "decision": "User approved clearly scoped adaptation that asks where to pay rent, without tendering payment."
+  },
+  "limitations": [
+    "Scope decision is not a blanket attestation of all formal legal, usability, flow and publication review gates.",
+    "Localhost browser testing; production package not installed or listed."
+  ]
+}

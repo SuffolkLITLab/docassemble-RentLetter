@@ -43,7 +43,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.RentLetter',
-      version='0.0.2',
+      version='0.1.0',
       description=('Contact a new owner of a lease property to determine where to send rent and remedy any habitability problems.  '),
       long_description='# docassemble.RentLetter\n\nContact a new owner of a lease property to determine where to send rent and remedy any habitability problems.  \n\n## Author\n\nacorey2@suffolk.edu\n\n',
       long_description_content_type='text/markdown',
@@ -52,7 +52,7 @@ setup(name='docassemble.RentLetter',
       license='The MIT License (MIT)',
       url='https://www.masslegalhelp.org/housing/lt1-form-26-conditions-rent-tender-letter.pdf',
       packages=find_namespace_packages(),
-      install_requires=[],
+      install_requires=['docassemble.AssemblyLine', 'docassemble.MassAccess'],
       zip_safe=False,
       package_data=find_package_data(where='docassemble/RentLetter/', package='docassemble.RentLetter'),
      )
